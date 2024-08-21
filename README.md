@@ -12,6 +12,9 @@ This is a simple tool to generate Kubernetes configuration files for a Go projec
 - Make sure to have a `.env` file in your project directory.
 
 ## Usage
+If you're using windows, you can download the binary from the release page.
+Or if you want to build it yourself, follow these steps:
+
 1. Clone this repository.
 ```bash
 git clone https://github.com/bagasdisini/go-k8s-gen
