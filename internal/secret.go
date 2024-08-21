@@ -10,14 +10,16 @@ import (
 )
 
 type Secret struct {
-	APIVersion string `yaml:"apiVersion"`
-	Kind       string `yaml:"kind"`
-	MetaData   struct {
-		CreationTimestamp *string `yaml:"creationTimestamp"`
-		Name              string  `yaml:"name"`
-		NameSpace         string  `yaml:"namespace"`
-	}
-	Data map[string]interface{} `yaml:"data"`
+	APIVersion string                 `yaml:"apiVersion"`
+	Kind       string                 `yaml:"kind"`
+	MetaData   MetaDataSecret         `yaml:"metadata"`
+	Data       map[string]interface{} `yaml:"data"`
+}
+
+type MetaDataSecret struct {
+	CreationTimestamp *string `yaml:"creationTimestamp"`
+	Name              string  `yaml:"name"`
+	NameSpace         string  `yaml:"namespace"`
 }
 
 func CreateSecret(portTarget int) error {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
@@ -71,9 +72,26 @@ func getEnvAndValue() (map[string]interface{}, error) {
 	lines := strings.Split(string(data), "\n")
 	for _, line := range lines {
 		if strings.Contains(line, "=") {
-			parts := strings.Split(line, "=")
+			parts := strings.SplitN(line, "=", 2)
 			if len(parts) == 2 {
-				envMap[strings.ToLower(strings.TrimSpace(parts[0]))] = strings.TrimSpace(parts[1])
+				key := strings.ToLower(strings.TrimSpace(parts[0]))
+				value := strings.TrimSpace(parts[1])
+				if intValue, err := strconv.Atoi(value); err == nil {
+					envMap[key] = intValue
+					continue
+				}
+				if floatValue, err := strconv.ParseFloat(value, 64); err == nil {
+					envMap[key] = floatValue
+					continue
+				}
+				if boolValue, err := strconv.ParseBool(value); err == nil {
+					envMap[key] = boolValue
+					continue
+				}
+				if len(value) < 1 {
+					continue
+				}
+				envMap[key] = value
 			}
 		}
 	}

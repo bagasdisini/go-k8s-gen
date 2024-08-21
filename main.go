@@ -35,4 +35,10 @@ func main() {
 		fmt.Printf("failed to create secret: %v", err)
 		return
 	}
+
+	err = internal.CreateDeployment()
+	if err != nil {
+		fmt.Printf("failed to create deployment: %v", err)
+		return
+	}
 }

@@ -8,26 +8,28 @@ import (
 )
 
 type Service struct {
-	APIVersion string `yaml:"apiVersion"`
-	Kind       string `yaml:"kind"`
-	MetaData   struct {
-		Labels struct {
-			App string `yaml:"app"`
-		} `yaml:"labels"`
-		Name      string `yaml:"name"`
-		NameSpace string `yaml:"namespace"`
-	} `yaml:"metadata"`
-	Spec struct {
-		Ports struct {
-			Port     int    `yaml:"port"`
-			Protocol string `yaml:"protocol"`
-			NodePort int    `yaml:"nodePort"`
-		} `yaml:"ports"`
-		Selector struct {
-			App string `yaml:"app"`
-		} `yaml:"selector"`
-		Type string `yaml:"type"`
-	} `yaml:"spec"`
+	APIVersion string          `yaml:"apiVersion"`
+	Kind       string          `yaml:"kind"`
+	MetaData   MetaDataService `yaml:"metadata"`
+	Spec       SpecService     `yaml:"spec"`
+}
+
+type MetaDataService struct {
+	Labels    App    `yaml:"labels"`
+	Name      string `yaml:"name"`
+	NameSpace string `yaml:"namespace"`
+}
+
+type SpecService struct {
+	Ports    []PortService `yaml:"ports"`
+	Selector App           `yaml:"selector"`
+	Type     string        `yaml:"type"`
+}
+
+type PortService struct {
+	Port     int    `yaml:"port"`
+	Protocol string `yaml:"protocol"`
+	NodePort int    `yaml:"nodePort"`
 }
 
 func CreateService(portTarget int) error {
@@ -55,9 +57,13 @@ func CreateService(portTarget int) error {
 	serviceDoc.MetaData.Name = projectName + "-" + branchName
 	serviceDoc.MetaData.NameSpace = userName
 
-	serviceDoc.Spec.Ports.Port = 5000
-	serviceDoc.Spec.Ports.Protocol = "TCP"
-	serviceDoc.Spec.Ports.NodePort = portTarget
+	port := PortService{
+		Port:     5000,
+		Protocol: "TCP",
+		NodePort: portTarget,
+	}
+
+	serviceDoc.Spec.Ports = append(serviceDoc.Spec.Ports, port)
 
 	serviceDoc.Spec.Selector.App = projectName + "-" + branchName
 	serviceDoc.Spec.Type = "NodePort"
